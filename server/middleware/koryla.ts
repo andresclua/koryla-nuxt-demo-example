@@ -1,37 +1,34 @@
-import { getVariant } from '../../lib/getVariant'
+import { createSplitEngine } from '@koryla/core'
 
-// Edge-style routes: intercept before the page renders and rewrite the path.
-// Equivalent to Next.js middleware.ts or Netlify edge functions.
-const EDGE_ROUTES: Record<string, string> = {
-  '/hero':          'NUXT_KORYLA_HERO_EXPERIMENT_ID',
-  '/pricing':       'NUXT_KORYLA_PRICING_EXPERIMENT_ID',
-  '/demo-edge':     'NUXT_KORYLA_DEMO_EDGE_EXPERIMENT_ID',
-  '/demo-combined': 'NUXT_KORYLA_DEMO_COMBINED_EXPERIMENT_ID',
-}
+// ponytail: singleton, same pattern as @koryla/next
+let engine: ReturnType<typeof createSplitEngine> | null = null
 
 export default defineEventHandler(async (event) => {
-  const path = event.path.split('?')[0]
-  const envKey = EDGE_ROUTES[path]
-  if (!envKey) return // not an edge experiment route
+  const apiKey = process.env.NUXT_KORYLA_API_KEY ?? ''
+  const apiUrl = process.env.NUXT_KORYLA_API_URL ?? ''
+  if (!apiKey || !apiUrl) return
 
-  const apiKey  = process.env.NUXT_KORYLA_API_KEY  ?? ''
-  const apiUrl  = process.env.NUXT_KORYLA_API_URL  ?? ''
-  const expId   = process.env[envKey] ?? ''
-  if (!apiKey || !apiUrl || !expId) return
+  if (!engine) engine = createSplitEngine({ apiKey, apiUrl })
 
-  const cookieHeader = getRequestHeader(event, 'cookie') ?? null
-  const result = await getVariant(cookieHeader, expId, { apiKey, apiUrl })
+  const result = await engine.process(
+    `${apiUrl}${event.path}`,
+    getRequestHeader(event, 'cookie') ?? ''
+  )
   if (!result) return
 
-  // Set sticky cookie if this is a new assignment
   if (result.isNewAssignment) {
     const expires = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toUTCString()
     appendResponseHeader(event, 'Set-Cookie',
       `${result.cookieName}=${result.variantId}; Path=/; Expires=${expires}; SameSite=Lax`)
   }
 
-  // Rewrite path for variant B (non-control variants)
-  if (!result.variant.is_control) {
-    event.path = `${path}-b${event.path.includes('?') ? '?' + event.path.split('?')[1] : ''}`
+  if (result.isNewSession) {
+    const expires = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toUTCString()
+    appendResponseHeader(event, 'Set-Cookie',
+      `ky_sid=${result.sessionId}; Path=/; Expires=${expires}; SameSite=Lax`)
   }
+
+  // result is only non-null for non-control variants → always rewrite
+  const url = new URL(result.targetUrl)
+  event.path = url.pathname + (event.path.includes('?') ? '?' + event.path.split('?')[1] : '')
 })
