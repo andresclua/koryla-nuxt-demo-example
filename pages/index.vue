@@ -77,6 +77,13 @@ const demos = [
     what: ['Control: Outlined button', 'Variant B: Filled terracotta button — add ?utm_text=variation-1'],
     color: '#C96A3F', bg: '#FEF0E8',
   },
+  {
+    href: '/demo-combined', number: '05', type: 'Edge + SDK',
+    title: 'Combined Layers',
+    description: 'Two independent layers: edge controls the page layout, SDK controls the button style. Four possible combinations.',
+    what: ['Layer 1 (Edge): single-col control vs two-col variant B', 'Layer 2 (SDK): outlined vs filled button via ?utm_style'],
+    color: '#0F2235', bg: '#F5EDE0',
+  },
 ]
 export default { setup: () => ({ demos }) }
 </script>

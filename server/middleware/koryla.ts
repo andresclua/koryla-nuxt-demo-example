@@ -14,6 +14,17 @@ export default defineEventHandler(async (event) => {
     `${apiUrl}${event.path}`,
     getRequestHeader(event, 'cookie') ?? ''
   )
+
+  // Pass variant path to the page component via event context.
+  // useState in the page reads this on SSR and serializes it into the Nuxt
+  // payload so client hydration uses the same value — no hydration mismatch.
+  if (result) {
+    const url = new URL(result.targetUrl)
+    event.context.korylaVariantPath = url.pathname
+  } else {
+    event.context.korylaVariantPath = null
+  }
+
   if (!result) return
 
   if (result.isNewAssignment) {
@@ -27,8 +38,4 @@ export default defineEventHandler(async (event) => {
     appendResponseHeader(event, 'Set-Cookie',
       `ky_sid=${result.sessionId}; Path=/; Expires=${expires}; SameSite=Lax`)
   }
-
-  // result is only non-null for non-control variants → always rewrite
-  const url = new URL(result.targetUrl)
-  event.path = url.pathname + (event.path.includes('?') ? '?' + event.path.split('?')[1] : '')
 })
