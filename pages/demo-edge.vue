@@ -22,7 +22,7 @@
 
   <!-- Control: light background -->
   <main v-else :style="s.page">
-    <div :style="s.badge">EDGE EXPERIMENT · CONTROL</div>
+    <div :style="s.badge">EDGE EXPERIMENT · TRANSPARENT URL REWRITE</div>
     <h1 :style="s.h1">You're on the control.</h1>
     <p :style="s.subtitle">
       You landed on <code :style="s.code">/demo-edge</code>.

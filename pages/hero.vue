@@ -57,10 +57,10 @@
 <script lang="ts">
 const stats = [['12,400', 'Tests run'], ['23%', 'Avg. uplift'], ['4.2 days', 'To significance']]
 const features = [
-  ['⚡', 'Zero flicker', 'Variants assigned before the browser renders anything.'],
-  ['🔒', 'No client JS', 'Works server-side — ad blockers cannot interfere.'],
-  ['📊', 'Live results', 'See impressions and conversions in real time.'],
-  ['🔌', 'Any stack', 'Next.js, Astro, WordPress, Nuxt — one API key.'],
+  ['⚡', 'Zero flicker', 'Variants are assigned before the browser renders anything.'],
+  ['🔒', 'No client JS', "Works entirely server-side — ad blockers can't interfere."],
+  ['📊', 'Live results', 'See impressions and conversions in your dashboard in real time.'],
+  ['🔌', 'Any stack', 'Next.js, Astro, WordPress, Nuxt — one API key, any platform.'],
 ]
 const sa = {
   page:         { maxWidth: '900px', margin: '0 auto', padding: '80px 40px', textAlign: 'center' as const },
