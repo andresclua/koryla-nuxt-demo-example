@@ -10,13 +10,15 @@
           <strong :style="sb.strong">Edge layer</strong> assigned you variant B (two-column layout).
           The <strong :style="sb.strong">SDK layer</strong> still controls the button independently.
         </p>
-        <div :style="sb.btnWrap">
-          <a href="/thank-you" :style="filledButton ? sb.btnFilled : sb.btnOutline">Start free today</a>
-          <p :style="sb.btnLabel">Button: {{ filledButton ? 'SDK variant B (filled)' : 'SDK control (outlined)' }}</p>
+        <div :style="sb.sdkBox">
+          <p :style="sb.sdkHeadline">{{ sdkVariation ? 'Stop guessing. Start winning.' : 'The fastest way to A/B test.' }}</p>
+          <p :style="sb.sdkSub">{{ sdkVariation ? 'Run your first experiment in minutes, not weeks.' : 'No flicker. No latency. Just results.' }}</p>
+          <a href="/thank-you" :style="sdkVariation ? sb.btnFilled : sb.btnOutline">{{ sdkVariation ? 'Make it happen →' : 'Get started →' }}</a>
+          <p :style="sb.btnLabel">SDK: {{ sdkVariation ? 'variation-1' : 'control' }}</p>
         </div>
         <div :style="sb.links">
           <a href="/demo-combined" :style="sb.link">Control layout</a>
-          <a href="/demo-combined?utm_style=variation-1" :style="sb.linkFilled">B layout + filled btn</a>
+          <a href="/demo-combined?utm_koryla=variation-1" :style="sb.linkFilled">B layout + SDK B</a>
         </div>
       </div>
       <div :style="sb.cards">
@@ -39,18 +41,19 @@
     <p :style="sa.subtitle">
       <strong :style="sa.strong">Layer 1 — Edge:</strong> middleware assigned you the control layout (this single-column page).
       <br /><br />
-      <strong :style="sa.strong">Layer 2 — SDK:</strong> <code :style="sa.code">searchParams</code> controls the button style.
-      Add <code :style="sa.code">?utm_style=variation-1</code> to see the filled variant.
+      <strong :style="sa.strong">Layer 2 — SDK:</strong> <code :style="sa.code">?utm_koryla=variation-1</code> changes headline, copy and button simultaneously.
     </p>
-    <div :style="sa.btnWrap">
-      <a href="/thank-you" :style="filledButton ? sa.btnFilled : sa.btnOutline">Start free today</a>
-      <p :style="sa.btnLabel">Button style: {{ filledButton ? 'SDK variant B (filled)' : 'SDK control (outlined)' }}</p>
+    <div :style="sa.sdkBox">
+      <p :style="sa.sdkHeadline">{{ sdkVariation ? 'Stop guessing. Start winning.' : 'The fastest way to A/B test.' }}</p>
+      <p :style="sa.sdkSub">{{ sdkVariation ? 'Run your first experiment in minutes, not weeks.' : 'No flicker. No latency. Just results.' }}</p>
+      <a href="/thank-you" :style="sdkVariation ? sa.btnFilled : sa.btnOutline">{{ sdkVariation ? 'Make it happen →' : 'Get started →' }}</a>
+      <p :style="sa.btnLabel">SDK: {{ sdkVariation ? 'variation-1' : 'control' }}</p>
     </div>
     <div :style="sa.box">
       <p :style="sa.boxTitle">Try combinations</p>
       <div :style="sa.links">
         <a href="/demo-combined" :style="sa.link">Edge control + SDK control</a>
-        <a href="/demo-combined?utm_style=variation-1" :style="sa.link">Edge control + SDK B</a>
+        <a href="/demo-combined?utm_koryla=variation-1" :style="sa.link">Edge control + SDK B</a>
       </div>
       <p :style="sa.hint">Clear cookies and reload to be re-assigned by the edge layer.</p>
     </div>
@@ -59,7 +62,7 @@
 
 <script setup lang="ts">
 const route = useRoute()
-const filledButton = route.query.utm_style === 'variation-1'
+const sdkVariation = route.query.utm_koryla === 'variation-1'
 
 const variantPath = useState('korylaEdgeVariantCombined', () =>
   useRequestEvent()?.context?.korylaVariantPath ?? null
@@ -80,10 +83,12 @@ const sa = {
   subtitle:    { fontSize: '17px', color: '#6b7280', lineHeight: 1.65, marginBottom: '40px' },
   strong:      { color: '#0F2235' },
   code:        { background: '#F5EDE0', padding: '2px 6px', borderRadius: '4px', fontSize: '14px' },
-  btnWrap:     { marginBottom: '32px' },
-  btnFilled:   { display: 'inline-block', background: '#C96A3F', color: '#fff', padding: '14px 32px', borderRadius: '12px', fontWeight: 700, fontSize: '15px', textDecoration: 'none' },
-  btnOutline:  { display: 'inline-block', background: 'transparent', color: '#C96A3F', padding: '14px 32px', borderRadius: '12px', fontWeight: 700, fontSize: '15px', textDecoration: 'none', border: '2px solid #C96A3F' },
-  btnLabel:    { fontSize: '12px', color: '#9ca3af', marginTop: '8px' },
+  sdkBox:      { background: '#F5EDE0', border: '1px solid #EAD9C4', borderRadius: '16px', padding: '28px 32px', marginBottom: '32px', display: 'flex', flexDirection: 'column' as const, gap: '8px' },
+  sdkHeadline: { fontSize: '22px', fontWeight: 800, color: '#0F2235', letterSpacing: '-0.5px', margin: 0 },
+  sdkSub:      { fontSize: '14px', color: '#6b7280', margin: 0, marginBottom: '8px' },
+  btnFilled:   { display: 'inline-block', background: '#C96A3F', color: '#fff', padding: '14px 32px', borderRadius: '12px', fontWeight: 700, fontSize: '15px', textDecoration: 'none', alignSelf: 'flex-start' as const },
+  btnOutline:  { display: 'inline-block', background: 'transparent', color: '#C96A3F', padding: '14px 32px', borderRadius: '12px', fontWeight: 700, fontSize: '15px', textDecoration: 'none', border: '2px solid #C96A3F', alignSelf: 'flex-start' as const },
+  btnLabel:    { fontSize: '12px', color: '#9ca3af', margin: 0 },
   box:         { background: '#F5EDE0', border: '1px solid #EAD9C4', borderRadius: '16px', padding: '24px' },
   boxTitle:    { fontSize: '12px', fontWeight: 700, color: '#C96A3F', textTransform: 'uppercase' as const, letterSpacing: '.5px', marginBottom: '12px' },
   links:       { display: 'flex', gap: '8px', flexWrap: 'wrap' as const },
@@ -100,10 +105,12 @@ const sb = {
   accent:      { color: '#C96A3F' },
   subtitle:    { fontSize: '16px', color: '#6b7280', lineHeight: 1.65, marginBottom: '28px' },
   strong:      { color: '#0F2235' },
-  btnWrap:     { marginBottom: '16px' },
-  btnFilled:   { display: 'inline-block', background: '#C96A3F', color: '#fff', padding: '12px 28px', borderRadius: '10px', fontWeight: 700, fontSize: '14px', textDecoration: 'none' },
-  btnOutline:  { display: 'inline-block', background: 'transparent', color: '#C96A3F', padding: '12px 28px', borderRadius: '10px', fontWeight: 700, fontSize: '14px', textDecoration: 'none', border: '2px solid #C96A3F' },
-  btnLabel:    { fontSize: '12px', color: '#9ca3af', marginTop: '8px' },
+  sdkBox:      { background: '#F5EDE0', border: '1px solid #EAD9C4', borderRadius: '14px', padding: '22px 24px', marginBottom: '16px', display: 'flex', flexDirection: 'column' as const, gap: '6px' },
+  sdkHeadline: { fontSize: '18px', fontWeight: 800, color: '#0F2235', letterSpacing: '-0.5px', margin: 0 },
+  sdkSub:      { fontSize: '13px', color: '#6b7280', margin: 0, marginBottom: '6px' },
+  btnFilled:   { display: 'inline-block', background: '#C96A3F', color: '#fff', padding: '12px 28px', borderRadius: '10px', fontWeight: 700, fontSize: '14px', textDecoration: 'none', alignSelf: 'flex-start' as const },
+  btnOutline:  { display: 'inline-block', background: 'transparent', color: '#C96A3F', padding: '12px 28px', borderRadius: '10px', fontWeight: 700, fontSize: '14px', textDecoration: 'none', border: '2px solid #C96A3F', alignSelf: 'flex-start' as const },
+  btnLabel:    { fontSize: '12px', color: '#9ca3af', margin: 0 },
   links:       { display: 'flex', gap: '8px', flexWrap: 'wrap' as const },
   link:        { fontSize: '12px', color: '#0F2235', background: '#fff', border: '1px solid #e5e7eb', padding: '5px 12px', borderRadius: '8px', textDecoration: 'none' },
   linkFilled:  { fontSize: '12px', color: '#fff', background: '#C96A3F', padding: '5px 12px', borderRadius: '8px', textDecoration: 'none' },
