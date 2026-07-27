@@ -12,8 +12,8 @@
           Run your first A/B test in under 5 minutes — no code changes,
           no flicker, no developer bottleneck. Just results.
         </p>
-        <a href="/thank-you" :style="s.btn">Start free today</a>
-        <p :style="s.footnote">Free forever on the hobby plan · Cancel anytime</p>
+        <a href="/thank-you" :style="s.btn">Get started today</a>
+        <p :style="s.footnote">No credit card required · Cancel anytime</p>
       </div>
       <div :style="s.cards">
         <div v-for="[icon, title, desc] in features" :key="title" :style="s.card">

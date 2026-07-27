@@ -7,7 +7,7 @@
         <span class="nav__brand-sub">Nuxt Demo</span>
       </a>
       <div class="nav__links">
-        <a href="/pricing">Pricing</a>
+        <a href="https://koryla.com/pricing">Pricing</a>
         <a href="/hero" class="nav__link--orange">Layout demo</a>
         <a href="/demo-sdk" class="nav__link--indigo">SDK</a>
         <a href="/demo-edge" class="nav__link--orange">Edge</a>
