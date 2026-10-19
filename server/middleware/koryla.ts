@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
   if (!engine) engine = createSplitEngine({ apiKey, apiUrl })
 
   const result = await engine.process(
-    `${apiUrl}${event.path}`,
+    getRequestURL(event).href, // real host — the API key is bound to this domain
     getRequestHeader(event, 'cookie') ?? ''
   )
 
